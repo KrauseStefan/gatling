@@ -69,7 +69,7 @@ private[metrics] class TcpSender(
 
     // Connection actor failed to send metric, log it as a failure
     case Event(CommandFailed(_: Write), data: ConnectedData) =>
-      logger.debug(s"Failed to write to Graphite server located at: $remote, retrying...")
+      logger.warn(s"Failed to write to Graphite server located at: $remote, retrying...")
       val newFailures = data.retry.newRetry
 
       stopIfLimitReachedOrContinueWith(newFailures) {
@@ -89,7 +89,7 @@ private[metrics] class TcpSender(
 
   when(RetriesExhausted) {
     case _ =>
-      logger.debug("All connection/sending retries have been exhausted, ignore further messages")
+      logger.error("All connection/sending retries have been exhausted, ignore further messages")
       stay()
   }
 
