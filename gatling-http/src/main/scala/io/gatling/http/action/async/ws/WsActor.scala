@@ -157,17 +157,7 @@ class WsActor(wsName: String, statsEngine: StatsEngine, httpEngine: HttpEngine) 
 
           check.check(message, tx.session) match {
             case Success(result) =>
-              val results = result :: tx.pendingCheckSuccesses
-
-              check.expectation match {
-                case UntilCount(count) if count == results.length =>
-                  succeedPendingCheck(tx, results, goToOpenState(webSocket))
-
-                case _ =>
-                  // let's pile up
-                  val newTx = tx.copy(pendingCheckSuccesses = results)
-                  context.become(openState(webSocket, newTx))
-              }
+              context.become(openState(webSocket, tx))
 
             case _ =>
           }
