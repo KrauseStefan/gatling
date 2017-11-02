@@ -24,7 +24,6 @@ private[sender] trait TcpSenderFSM extends FSM[TcpSenderState, TcpSenderData]
 private[sender] sealed trait TcpSenderState
 private[sender] case object WaitingForConnection extends TcpSenderState
 private[sender] case object Running extends TcpSenderState
-private[sender] case object RetriesExhausted extends TcpSenderState
 
 private[sender] sealed trait TcpSenderData
 private[sender] case object NoData extends TcpSenderData

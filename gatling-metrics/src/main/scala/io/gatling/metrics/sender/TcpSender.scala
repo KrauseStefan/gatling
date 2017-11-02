@@ -87,18 +87,13 @@ private[metrics] class TcpSender(
       }
   }
 
-  when(RetriesExhausted) {
-    case _ =>
-      logger.error("All connection/sending retries have been exhausted, ignore further messages")
-      stay()
-  }
-
   initialize()
 
   def askForConnection(): Unit =
     IO(Tcp) ! Connect(remote)
 
   def stopIfLimitReachedOrContinueWith(failures: Retry)(continueState: this.State) =
-    if (failures.isLimitReached) goto(RetriesExhausted) using NoData
+    if (failures.isLimitReached)
+      stay() // skip sending this package
     else continueState
 }
